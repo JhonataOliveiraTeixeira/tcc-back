@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum userRole {
+  STUDENT  
+  ADMIN
+}
+
+enum certificateStatus { 
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
+model User {
+  id           String       @id @default(uuid()) @db.Uuid
+  name         String
+  email        String       @unique()
+  password     String
+  role         userRole     @default(STUDENT)
+  createdAt    DateTime     @default(now()) @map("created_at")  
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+ 
+  certificates Certificate[]
+
+  @@map("users")  
+}
+
+model Certificate {  
+  id           String         @id @default(uuid()) @db.Uuid
+  title        String
+  status       certificateStatus @default(PENDING)
+  submittedAt  DateTime       @default(now()) @map("submitted_at")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  // Relação: Owner do certificate
+  ownerId      String         @db.Uuid  
+  owner        User           @relation(fields: [ownerId], references: [id], onDelete: Cascade) 
+
+  // Relação 1:1 com Annex (um certificate tem um annex)
+  annex        Annex?         @relation("CertificateAnnex", fields: [annexId], references: [id])
+  annexId      String?        @unique @db.Uuid  
+
+  @@map("certificates")  // Opcional: nome da tabela
+}
+
+model Annex {
+  id           String         @id @default(uuid()) @db.Uuid
+  objectKey    String         @unique  
+  contentType  String         
+  size         BigInt         
+  storage      String         @default("R2")  
+  checksum     String?       
+  publicUrl    String?       
+
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  
+  certificate  Certificate?   @relation("CertificateAnnex")
+
+  @@map("annexes")  
+}
