@@ -1,16 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@/infra/db/prisma/prisma.service';
 import { R2UploadService } from '@/infra/storage/r2/r2.service';
 import { Certificate } from '@/domain/certificate';
 import { UserId } from '@/domain/value-objects/id';
 import type { UserPayload } from '../auth/types';  // Ajuste path se necessário
+import { CertificateDb } from '@/infra/db/certificate.db';
+import type { ResponseFunciton } from '../utils/response-function';
+import { CertificateMapper, type CertificatesWithAnnexAndOwner } from '../utils/certificates-mapper';
 
 @Injectable()
 export class CertificatesService {
+  logger: Logger
   constructor(
     private prisma: PrismaService,
+    private certRepository: CertificateDb,
     private r2Service: R2UploadService
-  ) { }
+  ) {
+
+    this.logger = new Logger(CertificatesService.name);
+  }
 
   async submitCertificate(
     title: string,
@@ -103,5 +111,15 @@ export class CertificatesService {
       orderBy: { submittedAt: 'desc' },
     });
     return certificates;
+  }
+
+  async getCertificate(id: string): Promise<ResponseFunciton<CertificatesWithAnnexAndOwner[]>> {
+    this.logger.log(`Buscando certificado: ${id}`);
+    const certificates = await this.certRepository.getCertificatesByUserId(id);
+    return {
+      ok: true,
+      data: CertificateMapper.toArrayDomain(certificates),
+      error: null
+    };
   }
 }
