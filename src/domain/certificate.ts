@@ -41,6 +41,24 @@ export class Certificate {
     this._status = "REJECTED";
   }
 
+  static fromPDataBase(params: {
+    id: string;
+    ownerId: string;
+    title: string;
+    annex: Annex;
+    status: Status;
+    submittedAt: Date;
+  }) {
+    return new Certificate(
+      CertificateId.from(params.id),
+      UserId.from(params.ownerId),
+      params.title,
+      params.annex,
+      params.status,
+      params.submittedAt
+    );
+  }
+
   title() { return this._title; }
   annex() { return this._annex; }
   status() { return this._status; }
