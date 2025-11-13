@@ -3,10 +3,11 @@ import { CertificatesController } from './certificates.controller';
 import { CertificatesService } from './certificates.service';
 import { PrismaModule } from '@/infra/db/prisma/prisma.module';
 import { R2Module } from '@/infra/storage/r2/r2.module';
+import { DBModule } from '@/infra/db/db.module';
 
 
 @Module({
-  imports: [PrismaModule, R2Module],
+  imports: [PrismaModule, R2Module, DBModule],
   controllers: [CertificatesController],
   providers: [CertificatesService],
 })
