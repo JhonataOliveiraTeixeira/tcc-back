@@ -54,6 +54,9 @@ export class R2UploadService {
 
       // URL pública (se bucket público; senão, gere presigned abaixo)
       const publicUrl = `${process.env.R2_PUBLIC_DOMAIN}/${objectKey}`;
+      // https://pub-f5ba6441e5f74883b57c33bf16f5aa50.r2.dev/certs/6459aac6-016b-4cdf-9bcf-677bfaf52ad2/teste/4eb831f7-ac44-4477-8ced-776f1426f6aa.pdf
+      // https://pub-f5ba6441e5f74883b57c33bf16f5aa50.r2.dev/certs/6459aac6-016b-4cdf-9bcf-677bfaf52ad2/teste/4eb831f7-ac44-4477-8ced-776f1426f6aa.pdf
+
 
       // Retorna Annex
       return Annex.fromUploadSpec({

@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import type { userRole } from "generated/prisma/client"; // ← Type OK para tipos gerados
+import { userRole } from "generated/prisma/client"; // ← Type OK para tipos gerados
 import { PrismaService } from "./prisma/prisma.service"; // ← SEM 'type'! Isso é o key
 import  type { ResponseFunciton } from "@/application/utils/response-function";
 import { Student } from "@/domain/student";
@@ -96,6 +96,7 @@ export class UserDB {
   async getUsers(page: number, perPage: number): Promise<ResponseFunciton> {
     try {
       const users = await this.prisma.user.findMany({
+        where: { role: userRole.STUDENT },
         skip: (page - 1) * perPage,
         take: perPage,
         select: {
