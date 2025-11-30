@@ -10,7 +10,7 @@ import  { Admin } from "@/domain/admin";
 export class UserDB {
   constructor(private readonly prisma: PrismaService) { } // ← Agora resolve como classe real
 
-  async create(id: string, name: string, email: string, password: string, role: userRole): Promise<ResponseFunciton> {
+  async create(id: string, name: string, email: string, password: string, role: userRole, course?: string): Promise<ResponseFunciton> {
     try {
       await this.prisma.user.create({
         data: {
@@ -18,6 +18,7 @@ export class UserDB {
           email,
           password,
           role,
+          course,
           id
         }
       });
@@ -131,6 +132,7 @@ export class UserDB {
           id: true,
           name: true,
           email: true,
+          course: true,
           password: true,
           role: true
         }
@@ -141,7 +143,7 @@ export class UserDB {
         
         return {
           ok: true,
-          data: user.role === 'STUDENT' ? new Student(user.name, user.email, new Password(user.password), user.id) : new Admin(user.name, user.email, new Password(user.password), user.id), // ← Limpo, sem expor erros
+          data: user.role === 'STUDENT' ? new Student(user.name, user.email, user.course!, new Password(user.password), user.id) : new Admin(user.name, user.email, new Password(user.password), user.id), // ← Limpo, sem expor erros
           error: null
         };
       }

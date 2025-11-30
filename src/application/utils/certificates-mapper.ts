@@ -12,6 +12,7 @@ export interface CertificatesWithAnnexAndOwner{
   title: string;
   status: string;
   submittedAt: Date;
+  hours: number;
   ownerId: string;
   annexId: string | null;
 }
@@ -24,6 +25,7 @@ export class CertificateMapper{
       title: params.title,
       status: params.status,
       submittedAt: params.submittedAt,
+      hours: params.hours,
       owner:{
         name: params.owner.name
       },

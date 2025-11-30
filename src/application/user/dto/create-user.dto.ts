@@ -11,6 +11,10 @@ export class CreateUserDTO{
 
   @IsString()
   @IsNotEmpty()
+  curse!: string
+
+  @IsString()
+  @IsNotEmpty()
   @Length(6, 16)
   password!: string
 

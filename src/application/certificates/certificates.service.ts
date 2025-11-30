@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/infra/db/prisma/prisma.service';
 import { R2UploadService } from '@/infra/storage/r2/r2.service';
 import { Certificate } from '@/domain/certificate';
@@ -111,6 +111,7 @@ export class CertificatesService {
            select: { name: true } 
           }
         },
+
       orderBy: { submittedAt: 'desc' },
     });
     return certificates;
@@ -122,6 +123,25 @@ export class CertificatesService {
     return {
       ok: true,
       data: CertificateMapper.toArrayDomain(certificates),
+      error: null
+    };
+  }
+
+  async adminUpdateCertificate(id: string, data: any): Promise<ResponseFunciton<null | string>> {
+    this.logger.log(`Atualizando certificado: ${id}`);
+    const certificate = await this.certRepository.adminUpdateCertificateStatus(id, data);
+
+    if (!certificate) {
+      return {
+        ok: false,
+        data: null,
+        error: new NotFoundException("Certificado nao encontrado")
+      };
+    }
+
+    return {
+      ok: true,
+      data: "Update Suceesful",
       error: null
     };
   }

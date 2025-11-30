@@ -7,30 +7,33 @@ import { userRole } from "generated/prisma/enums"
 @Injectable()
 export class Student{
   private id: UserId
+  private course: string
   private name: string
   private email: Email
   protected password: Password 
   private role: userRole
 
-  constructor( name: string, email: string, password: Password, id?: string, role: string = "stdudent"){
+  constructor(name: string, email: string, course: string, password: Password, id?: string, role: string = "stdudent") {
     this.id = id ? UserId.from(id) : UserId.new()
     this.name = name
     this.email = new Email(email)
+    this.course = course
     this.password = password
     this.role = userRole.STUDENT
   }
 
-  static async create(name: string, email: string, password: string | null, id?: string,): Promise<Student>{  
+  static async create(name: string, email: string, course: string, password: string | null, id?: string,): Promise<Student> {  
 
     const passwordVO = await Password.create(password)
     
-   return new Student( name, email, passwordVO, id)
+    return new Student(name, email, course, passwordVO, id)
   }
   toJson(){
     return {
       id: this.id,
       name: this.name,
       email: this.email,
+      course: this.course,
       password: this.password,
       role: this.role
     }

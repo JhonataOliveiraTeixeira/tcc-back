@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import  { PrismaService } from "./prisma/prisma.service";
+import type { Status } from "@/domain/certificate";
 
 @Injectable()
 export class CertificateDb {
@@ -23,5 +24,19 @@ export class CertificateDb {
       },
       orderBy: { submittedAt: 'desc' },
     });
+  }
+
+  public async adminUpdateCertificateStatus(certificateId: string, status: Status) {
+    const certificate = await this.prisma.certificate.update({
+      where: { id: certificateId },
+      data: {
+        status: status.status!
+
+      }
+    });
+    if (!certificate) {
+      return null;
+    }
+    return certificate
   }
 }

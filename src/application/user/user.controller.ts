@@ -13,14 +13,14 @@ export class UserController {
 
   constructor(private readonly userService: UserService) { }
 
-  @Public()  // Pula AuthGuard para criação pública
+
   @Post('/student')
   async createStudent(@Body() data: CreateUserDTO) {
     this.logger.log(`Criando student: ${data.email}`);
     return this.userService.createStudent(data);
   }
 
-  @Public()  // Pula AuthGuard para criação pública
+
   @Post('/admin')
   async createAdmin(@Body() data: CreateUserDTO) {
     this.logger.log(`Criando admin: ${data.email}`);  

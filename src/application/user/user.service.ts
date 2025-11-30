@@ -12,9 +12,9 @@ export class UserService{
   ){}
 
   async createStudent(data: CreateUserDTO){
-    const student = (await Student.create(data.name, data.email, data.password )).toJson()
+    const student = (await Student.create(data.name, data.email, data.curse, data.password)).toJson()
 
-    const res = await this.userDb.create(student.id.toString(), student.name, student.email.toString(), student.password.toString(), student.role)
+    const res = await this.userDb.create(student.id.toString(), student.name, student.email.toString(), student.password.toString(), student.role, student.course)
     return {
       ok: res.ok,
       data: res.data,

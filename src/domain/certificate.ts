@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Annex } from "./value-objects/annex";
 import { CertificateId, UserId } from "./value-objects/id";
 
-type Status = "PENDING" | "CONFIRMED" | "REJECTED";
+export type Status = "PENDING" | "CONFIRMED" | "REJECTED" | "AI_CONFIRMED";
 
 @Injectable()
 export class Certificate {

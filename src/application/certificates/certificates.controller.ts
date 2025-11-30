@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFile, UseInterceptors, Body, UseGuards, Request, BadRequestException, Get, Param } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, Body, UseGuards, Request, BadRequestException, Get, Param, Put } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Multer } from 'multer';  // ← Import para tipo do file
 import type { Request as ExpressRequest } from 'express';  // ← Import para tipar req
@@ -63,5 +63,10 @@ export class CertificatesController {
   @Get('user/:id')
   async getCertificate(@Param('id') id: string) {
     return this.certificatesService.getCertificate(id);
+  }
+
+  @Put(':id')
+  async adminUpdateCertificate(@Param('id') id: string, @Body() { status }: any) {
+    return this.certificatesService.adminUpdateCertificate(id, status);
   }
 }

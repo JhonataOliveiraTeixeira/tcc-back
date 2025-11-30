@@ -23,12 +23,14 @@ enum certificateStatus {
   PENDING
   CONFIRMED
   REJECTED
+  AI_CONFIRMED
 }
 
 model User {
   id           String       @id @default(uuid()) @db.Uuid
   name         String
   email        String       @unique()
+  course        String?       
   password     String
   role         userRole     @default(STUDENT)
   createdAt    DateTime     @default(now()) @map("created_at")  
