@@ -5,7 +5,6 @@ import type { Request as ExpressRequest } from 'express';  // ← Import para ti
 import { AuthGuard } from '../auth/auth.guard';
 import { CertificatesService } from './certificates.service';
 import type { UserPayload } from '../auth/types';
-import { get } from 'node:http';
 
 interface AuthRequest extends ExpressRequest {  // ← Tipo estendido para req.user
   user: UserPayload;
@@ -28,17 +27,22 @@ export class CertificatesController {
   }))
   async submit(
     @UploadedFile() file: Express.Multer.File,  // ← Tipo correto
-    @Body('title') title: string,
+    @Body({ transform: (data) => ({ ...data, hours: Number(data.hours) }) }) data: {
+      title: string,
+      hours: number
+    },
     @Request() req: AuthRequest  // ← Tipado como AuthRequest
   ) {
     const owner = req.user;  // Agora tipado como UserPayload
+    if (req.user.role !== 'STUDENT') throw new BadRequestException('Apenas estudantes podem submeter certificados');
 
     if (!file) throw new BadRequestException('Anexo obrigatório');
-    if (!title || title.length < 3) throw new BadRequestException('Título inválido');
+    if (!data.title || data.title.length < 3) throw new BadRequestException('Título inválido');
     console.log('owner', owner);
 
     return this.certificatesService.submitCertificate(
-      title,
+      data.title,
+      data.hours,
       file.buffer,  // Buffer para upload
       file.mimetype,
       owner.id  // ID do owner
