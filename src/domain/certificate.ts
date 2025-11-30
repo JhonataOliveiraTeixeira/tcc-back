@@ -9,6 +9,7 @@ export class Certificate {
   private constructor(
     public readonly id: CertificateId,
     public  ownerId: UserId,
+    private _hours: number,
     private _title: string,
     private _annex: Annex,
     private _status: Status,
@@ -16,7 +17,7 @@ export class Certificate {
   ) { }
 
   static submit(params: {
-    ownerId: UserId; title: string; annex: Annex;
+    ownerId: UserId; title: string; annex: Annex; hours: number
   }) {
     if (!params.title || params.title.length < 3) {
       throw new Error("Título muito curto");
@@ -24,6 +25,7 @@ export class Certificate {
     return new Certificate(
       CertificateId.new(),
       params.ownerId,
+      params.hours,
       params.title.trim(),
       params.annex,
       "PENDING",
@@ -45,6 +47,7 @@ export class Certificate {
     id: string;
     ownerId: string;
     title: string;
+    hours: number
     annex: Annex;
     status: Status;
     submittedAt: Date;
@@ -52,6 +55,7 @@ export class Certificate {
     return new Certificate(
       CertificateId.from(params.id),
       UserId.from(params.ownerId),
+      params.hours,
       params.title,
       params.annex,
       params.status,
@@ -59,6 +63,7 @@ export class Certificate {
     );
   }
 
+  hours() { return this._hours; }
   title() { return this._title; }
   annex() { return this._annex; }
   status() { return this._status; }

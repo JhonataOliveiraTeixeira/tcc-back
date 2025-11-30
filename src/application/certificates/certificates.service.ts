@@ -22,6 +22,7 @@ export class CertificatesService {
 
   async submitCertificate(
     title: string,
+    hours: number,
     fileBuffer: Buffer,
     contentType: string,
     owner: string  // ID do owner (string)
@@ -37,6 +38,7 @@ export class CertificatesService {
     // 2. Cria Certificate VO (para validação)
     const certificate = Certificate.submit({
       ownerId: UserId.from(owner),
+      hours,
       title,
       annex
     });
@@ -61,6 +63,7 @@ export class CertificatesService {
         data: {
           id: certificate.id.toString(),
           title: certificate.title(),
+          hours: certificate.hours(),
           status: certificate.status(),
           submittedAt: certificate.submittedAt,
           ownerId: owner,  // String do param
