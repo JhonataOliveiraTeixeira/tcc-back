@@ -30,7 +30,7 @@ export class CertificateDb {
     const certificate = await this.prisma.certificate.update({
       where: { id: certificateId },
       data: {
-        status: status.status!
+        status: status
 
       }
     });
