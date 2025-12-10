@@ -94,18 +94,29 @@ export class UserDB {
     }
   }
 
-  async getUsers(page: number, perPage: number): Promise<ResponseFunciton> {
+  async getUsers(page: number, perPage: number, role: userRole, orderDirection: 'asc' | 'desc', course?: string, name?: string, orderBy?: string): Promise<ResponseFunciton> {
     try {
       const users = await this.prisma.user.findMany({
-        where: { role: userRole.STUDENT },
+        where: {
+          role: role,
+          course: {
+            contains: course
+          },
+          name: {
+            contains: name
+          }
+        },
         skip: (page - 1) * perPage,
         take: perPage,
         select: {
           id: true,
           name: true,
+          course: true,
           email: true,
           role: true
-        }
+        },
+        orderBy: orderBy ? { [orderBy]: orderDirection } : undefined,
+
       });
       return {
         ok: true,

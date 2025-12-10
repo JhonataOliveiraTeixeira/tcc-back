@@ -5,6 +5,7 @@ import type { UpdateUserDTO } from "./dto/update-user.dto";
 import { AuthGuard } from "../auth/auth.guard";
 import { Public } from "../auth/is-public.decorator";
 import { Roles } from "../auth/roles.decorator";
+import type { userRole } from "generated/prisma/enums";
 
 @Controller('user')
 @UseGuards(AuthGuard)  
@@ -43,9 +44,14 @@ export class UserController {
   @Roles('ADMIN')  // ← Maiúscula para bater com enum Prisma (ajuste se for 'admin')
   async getUsers(
     @Query('page', {transform: Number}) page: number = 1,  // Default 1
-    @Query('perPage', { transform: Number}) perPage: number = 10  // Default 10, sem transform (faça no service)
+    @Query('perPage', { transform: Number }) perPage: number = 10,
+    @Query('course') course?: string,
+    @Query('role') role: userRole = 'STUDENT',
+    @Query('name') name?: string,
+    @Query('orderBy') orderBy?: string,
+    @Query('orderDirection') orderDirection: 'asc' | 'desc' = 'asc',
   ) {
-    this.logger.log(`Listando users: page ${page}, perPage ${perPage}`);
-    return this.userService.getUsers(page, perPage);
+    this.logger.log(`Listando users: page ${page}, perPage ${perPage}, course ${course}, role ${role}, name ${name}`);
+    return this.userService.getUsers(page, perPage, role, orderDirection, course, name, orderBy);
   }
 }

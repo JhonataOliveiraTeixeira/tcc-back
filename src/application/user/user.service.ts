@@ -4,6 +4,7 @@ import { CreateUserDTO } from "./dto/create-user.dto";
 import { Student } from "@/domain/student";
 import type { UpdateUserDTO } from "./dto/update-user.dto";
 import { Admin } from "@/domain/admin";
+import type { userRole } from "generated/prisma/enums";
 
 @Injectable()
 export class UserService{
@@ -59,8 +60,8 @@ export class UserService{
     }
   }
 
-  async getUsers(page: number, perPage: number){
-    const res = await this.userDb.getUsers(page, perPage)
+  async getUsers(page: number, perPage: number, role: userRole, orderDirection: 'asc' | 'desc', course?: string, name?: string, orderBy?: string) {
+    const res = await this.userDb.getUsers(page, perPage, role, orderDirection, course, name, orderBy,)
     return {
       ok: res.ok,
       data: res.data,
