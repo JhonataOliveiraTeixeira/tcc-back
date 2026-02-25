@@ -25,7 +25,6 @@ export class UserService{
 
   async createAdmin(data: CreateUserDTO){
     const admin = (await Admin.create(data.name, data.email, data.password )).toJson()
-    console.log('admin', admin)
 
     const res = await this.userDb.create(admin.id.toString(), admin.name, admin.email.toString(), admin.password.toString(), admin.role)
     return {

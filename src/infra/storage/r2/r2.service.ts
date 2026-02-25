@@ -50,7 +50,6 @@ export class R2UploadService {
       await this.s3Client.write(objectKey, fileBuffer, {
         type: contentType, 
       });
-      console.log(`Upload OK para key: ${objectKey}`);
 
       // URL pública (se bucket público; senão, gere presigned abaixo)
       const publicUrl = `${process.env.R2_PUBLIC_DOMAIN}/${objectKey}`;

@@ -15,7 +15,6 @@ export class AuthService {
     pass: string,
   ): Promise<{ access_token: string }> {
     const {data: user} = await this.usersService.getUserByEmail(email)
-    console.log('user from authservice', user)
     const isValid = await user.login(email, pass)
 
 

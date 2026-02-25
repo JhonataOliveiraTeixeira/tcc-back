@@ -17,7 +17,6 @@ export class Password implements ValueObjectInterface {
       algorithm: 'bcrypt',
       cost: 12  // Work factor alto para segurança (10-14 ideal)
     });
-    console.log('Hashed password:', hashedPassword);
     return new Password(hashedPassword);
   }
 
@@ -25,7 +24,6 @@ export class Password implements ValueObjectInterface {
     if (!other) return false;
     try {
       const isOk = await Bun.password.verify(other, this.password); // A instÂncia de Password contém o hash, portanto deve ser passado como seguudo argumento
-      console.log('Password verification result:', isOk);
       return isOk
     } catch (error: any) {
       throw new InternalServerErrorException("Erro ao verificar senha");

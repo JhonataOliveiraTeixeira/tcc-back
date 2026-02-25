@@ -14,14 +14,12 @@ export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService, private reflector: Reflector) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('=== AuthGuard Debug === Rota:', context.getHandler().name);
     const isPublic = this.reflector.getAllAndOverride<boolean>(jwtConstants.public, [
       context.getHandler(),
       
       context.getClass(),
     ]);
 
-    console.log('AuthGuard: isPublic?', isPublic);
     if (isPublic) {
       
       return true;

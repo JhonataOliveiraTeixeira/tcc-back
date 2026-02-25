@@ -38,7 +38,6 @@ export class CertificatesController {
 
     if (!file) throw new BadRequestException('Anexo obrigatório');
     if (!data.title || data.title.length < 3) throw new BadRequestException('Título inválido');
-    console.log('owner', owner);
 
     return this.certificatesService.submitCertificate(
       data.title,
