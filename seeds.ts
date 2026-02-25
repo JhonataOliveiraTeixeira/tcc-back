@@ -1,36 +1,33 @@
-import { PrismaClient, Prisma} from "./generated/prisma/client"
+import { UserDB } from "@/infra/db/user.db"
+import { PrismaService } from "@/infra/db/prisma/prisma.service"
+import { UserService } from "@/application/user/user.service"
+import { Prisma } from "generated/prisma/client"
 
-const prisma = new PrismaClient()
 
 async function main() {
-    await prisma.$connect()
-    try {    
-    await prisma.user.create(
-        {
-            data: {
-                name: "Jhonata dev",
-                email: "jonasdeot@gmail.com",
-                password: "123456"
-            }
-        }
-    )} catch (err) {
-        if (err instanceof  Prisma.PrismaClientKnownRequestError) {
-            if (err.code === 'P2002') {
-                console.log("usuário admin já criado")
-            }
-        } else {
-            throw err
-        }
-    }
+    const prismaService = new PrismaService()
+    const userDb = new UserDB(prismaService)
+    const userService = new UserService(userDb)
+
+    return await userService.createAdmin({
+      name: "Jhonata dev",
+      email: "jonasdeot@gmail.com",
+      password: "123456",
+      curse: "admin"
+    })
 }
 
 main()
     .then(async () => {
-        await prisma.$disconnect()
+        console.log("Seed executado com sucesso")        
     })
     .catch(async (e) => {
-        console.error(e)
-        await prisma.$disconnect()
-        process.exit(1)
+        if (e instanceof Prisma.PrismaClientKnownRequestError){
+            if (e.code === "P2002"){
+                console.log("Usuário já inserido")
+            }
+        } else {
+            console.log(e)
+        }
     })
 
