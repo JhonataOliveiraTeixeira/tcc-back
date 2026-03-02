@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
-import { userRole } from "generated/prisma/client"; // ← Type OK para tipos gerados
+import { userRole } from "../../../generated/prisma/client";
 import { PrismaService } from "./prisma/prisma.service"; // ← SEM 'type'! Isso é o key
 import  type { ResponseFunciton } from "../../application/utils/response-function";
 import { Student } from "../../domain/student";

@@ -4,7 +4,7 @@ import { CreateUserDTO } from "./dto/create-user.dto";
 import { Student } from "../../domain/student";
 import type { UpdateUserDTO } from "./dto/update-user.dto";
 import { Admin } from "../../domain/admin";
-import type { userRole } from "generated/prisma/enums";
+import type { userRole } from "../../../generated/prisma/enums"; // Path relativo ao runtime
 
 @Injectable()
 export class UserService{

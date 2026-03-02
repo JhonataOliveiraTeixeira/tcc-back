@@ -1,7 +1,7 @@
 import { UserDB } from "./src/infra/db/user.db"
 import { PrismaService } from "./src/infra/db/prisma/prisma.service"
 import { UserService } from "./src/application/user/user.service"
-import { Prisma } from "generated/prisma/client"
+import { Prisma } from "./generated/prisma/client"; // Path relativo ao root
 
 
 async function main() {

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { Email } from "./value-objects/email"
 import { UserId } from "./value-objects/id"
 import { Password } from "./value-objects/password"
-import { userRole } from "generated/prisma/enums"
+import { userRole } from "../../generated/prisma/enums";
 
 @Injectable()
 export class Admin {

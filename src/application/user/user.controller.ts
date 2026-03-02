@@ -5,7 +5,7 @@ import type { UpdateUserDTO } from "./dto/update-user.dto";
 import { AuthGuard } from "../auth/auth.guard";
 import { Public } from "../auth/is-public.decorator";
 import { Roles } from "../auth/roles.decorator";
-import type { userRole } from "generated/prisma/enums";
+import type { userRole } from "../../../generated/prisma/enums"; // Path relativo ao runtime
 
 @Controller('user')
 @UseGuards(AuthGuard)  
