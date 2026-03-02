@@ -8,8 +8,8 @@
   "license": "UNLICENSED",
   "module": "src/main.ts",
   "scripts": {
-    "build": "prisma generate && NODE_ENV=production nest build",
-    "postinstall": "prisma generate",
+    "build": "prisma generate && nest build",
+    "install": "prisma generate",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=development tsc && bun .",
     "start:dev": "NODE_ENV=development tsc-watch --onSuccess \"bun .\"",
