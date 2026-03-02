@@ -12,10 +12,8 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization',
   });
   
-
-  await app.listen(PORT, () => {
-    logger.log(`Server is listening at port ${PORT}`);
-    logger.log(`Current environment is: ${process.env.NODE_ENV}`);
-  });
+  await app.listen(PORT);
+  
+  logger.log(`Server is listening at port ${PORT}`);
 }
 bootstrap();
