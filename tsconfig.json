@@ -1,21 +1,30 @@
 {
   "compilerOptions": {
-    // Enable latest features
+    // Core Runtime Settings
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
     "allowJs": true,
+    "types": ["bun"],
 
-    "types": [
-      "bun"
-    ],
+    // Metadata & Decorators (CRÍTICO para NestJS + Bun)
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
 
-    // Bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
+    // Module Resolution
+    // Alterado de 'bundler' para 'NodeNext' ou 'Node' para garantir 
+    // que o Bun resolva os imports do Prisma e NestJS corretamente no runtime.
+    "moduleResolution": "Node", 
+    "verbatimModuleSyntax": false, // Alterado para false para permitir o processamento de decorators
+    
+    // Output Settings
+    // Mesmo usando script personalizado, o TS precisa 'concordar' em emitir 
+    // para que o Reflect-Metadata funcione.
+    "noEmit": false, 
+    "outDir": "./dist",
+    "sourceMap": true,
 
     // Best practices
     "strict": true,
@@ -23,20 +32,12 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
 
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-
-    // For NestJS
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-
-    // Path aliases
+    // Path aliases (Mantidos conforme seu projeto)
     "paths": {
       "@/*": ["./src/*"],
       "generated/*": ["./generated/*"]
     }
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
