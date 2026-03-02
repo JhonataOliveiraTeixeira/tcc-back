@@ -1,7 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import crypto from 'crypto';
-import { v4 as uuidv4 } from 'uuid';
 import { Annex } from '../../../domain/value-objects/annex';
 import type { UserId } from '../../../domain/value-objects/id';
 
@@ -40,7 +39,7 @@ export class R2UploadService {
     // Gera key única: certs/{ownerId}/{title-slug}/{uuid}.{ext}
     const fileExt = contentType.split('/')[1] || 'bin';
     const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const objectKey = `certs/${ownerId.toString()}/${slug}/${uuidv4()}.${fileExt}`;
+    const objectKey = `certs/${ownerId.toString()}/${slug}/${crypto.randomUUID()}.${fileExt}`;
 
     
     const checksum = crypto.createHash('sha256').update(fileBuffer).digest('hex');
