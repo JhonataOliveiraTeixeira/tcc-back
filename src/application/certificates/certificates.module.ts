@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { CertificatesController } from './certificates.controller';
 import { CertificatesService } from './certificates.service';
-import { PrismaModule } from '@/infra/db/prisma/prisma.module';
-import { R2Module } from '@/infra/storage/r2/r2.module';
-import { DBModule } from '@/infra/db/db.module';
+import { PrismaModule } from 'src/infra/db/prisma/prisma.module';
+import { R2Module } from 'src/infra/storage/r2/r2.module';
+import { DBModule } from 'src/infra/db/db.module';
 
 
 @Module({

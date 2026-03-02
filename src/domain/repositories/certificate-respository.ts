@@ -1,5 +1,5 @@
-import type { Certificate } from "../certificate";
-import type { CertificateId } from "../value-objects/id";
+import type { Certificate } from "src/domain/certificate";
+import type { CertificateId } from "src/domain/value-objects/id";
 
 
 export interface CertificateRepository {

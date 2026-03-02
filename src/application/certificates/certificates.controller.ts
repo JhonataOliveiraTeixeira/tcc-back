@@ -2,9 +2,9 @@ import { Controller, Post, UploadedFile, UseInterceptors, Body, UseGuards, Reque
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Multer } from 'multer';  // ← Import para tipo do file
 import type { Request as ExpressRequest } from 'express';  // ← Import para tipar req
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from 'src/application/auth/auth.guard';
 import { CertificatesService } from './certificates.service';
-import type { UserPayload } from '../auth/types';
+import type { UserPayload } from 'src/application/auth/types';
 
 interface AuthRequest extends ExpressRequest {  // ← Tipo estendido para req.user
   user: UserPayload;

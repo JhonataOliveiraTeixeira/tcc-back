@@ -26,7 +26,6 @@
 
     // Path aliases
     "paths": {
-      "@/*": ["src/*"],
       "generated/*": ["generated/*"]
     }
   },
