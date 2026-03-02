@@ -3,7 +3,7 @@ services:
     container_name: tcc_postgres
     image: postgres
     ports:
-      - "5432:5432" 
+      - "5439:5439" 
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
