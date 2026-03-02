@@ -2,8 +2,8 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
-import { Annex } from 'src/domain/value-objects/annex';
-import type { UserId } from 'src/domain/value-objects/id';
+import { Annex } from '../../domain/value-objects/annex';
+import type { UserId } from '../../domain/value-objects/id';
 
 @Injectable()
 export class R2UploadService {

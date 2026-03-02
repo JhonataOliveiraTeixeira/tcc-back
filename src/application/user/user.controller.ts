@@ -2,9 +2,9 @@ import { Body, Controller, Get, Logger, Param, Post, Put, Query, UseGuards, type
 import { UserService } from "./user.service";
 import type { CreateUserDTO } from "./dto/create-user.dto";
 import type { UpdateUserDTO } from "./dto/update-user.dto";
-import { AuthGuard } from "src/application/auth/auth.guard";
-import { Public } from "src/application/auth/is-public.decorator";
-import { Roles } from "src/application/auth/roles.decorator";
+import { AuthGuard } from "../auth/auth.guard";
+import { Public } from "../auth/is-public.decorator";
+import { Roles } from "../auth/roles.decorator";
 import type { userRole } from "generated/prisma/enums";
 
 @Controller('user')

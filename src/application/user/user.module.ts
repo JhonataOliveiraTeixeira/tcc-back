@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { UserController } from "./user.controller";
-import { UserDB } from "src/infra/db/user.db";
+import { UserDB } from "../../infra/db/user.db";
 import { UserService } from "./user.service";
-import { DBModule } from "src/infra/db/db.module";
+import { DBModule } from "../../infra/db/db.module";
 
 @Module({
   controllers: [UserController],

@@ -1,6 +1,6 @@
-import { UserDB } from "src/infra/db/user.db"
-import { PrismaService } from "src/infra/db/prisma/prisma.service"
-import { UserService } from "src/application/user/user.service"
+import { UserDB } from "./src/infra/db/user.db"
+import { PrismaService } from "./src/infra/db/prisma/prisma.service"
+import { UserService } from "./src/application/user/user.service"
 import { Prisma } from "generated/prisma/client"
 
 

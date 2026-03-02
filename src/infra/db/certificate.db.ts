@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import  { PrismaService } from "./prisma/prisma.service";
-import type { Status } from "src/domain/certificate";
+import type { Status } from "../../domain/certificate";
 
 @Injectable()
 export class CertificateDb {

@@ -1,9 +1,9 @@
-import { UserDB } from "src/infra/db/user.db";
+import { UserDB } from "../../infra/db/user.db";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateUserDTO } from "./dto/create-user.dto";
-import { Student } from "src/domain/student";
+import { Student } from "../../domain/student";
 import type { UpdateUserDTO } from "./dto/update-user.dto";
-import { Admin } from "src/domain/admin";
+import { Admin } from "../../domain/admin";
 import type { userRole } from "generated/prisma/enums";
 
 @Injectable()

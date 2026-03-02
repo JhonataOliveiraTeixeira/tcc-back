@@ -1,12 +1,12 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/infra/db/prisma/prisma.service';
-import { R2UploadService } from 'src/infra/storage/r2/r2.service';
-import { Certificate } from 'src/domain/certificate';
-import { UserId } from 'src/domain/value-objects/id';
-import type { UserPayload } from 'src/application/auth/types';
-import { CertificateDb } from 'src/infra/db/certificate.db';
-import type { ResponseFunciton } from 'src/application/utils/response-function';
-import { CertificateMapper, type CertificatesWithAnnexAndOwner } from 'src/application/utils/certificates-mapper';
+import { PrismaService } from '../../infra/db/prisma/prisma.service';
+import { R2UploadService } from '../../infra/storage/r2/r2.service';
+import { Certificate } from '../../domain/certificate';
+import { UserId } from '../../domain/value-objects/id';
+import type { UserPayload } from '../auth/types';
+import { CertificateDb } from '../../infra/db/certificate.db';
+import type { ResponseFunciton } from '../utils/response-function';
+import { CertificateMapper, type CertificatesWithAnnexAndOwner } from '../utils/certificates-mapper';
 
 @Injectable()
 export class CertificatesService {
