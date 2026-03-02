@@ -1,16 +1,18 @@
-FROM oven/bun:alpine AS base
+FROM node:20-alpine AS base
 WORKDIR /usr/src/app
-COPY package.json bun.lockb ./
+COPY package.json package-lock.json ./
 
 FROM base AS dev_deps
-RUN bun install --frozen-lockfile
+RUN npm install --production=false
 
 FROM base AS build
 COPY --from=dev_deps /usr/src/app/node_modules ./node_modules
 COPY . .
-RUN bun run build
+RUN npm run build
 
-FROM base AS release 
+FROM node:20-alpine AS release
+WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/node_modules ./node_modules
 EXPOSE ${PORT}
-CMD ["bun", "start:prod"]
+CMD ["node", "dist/main.js"]

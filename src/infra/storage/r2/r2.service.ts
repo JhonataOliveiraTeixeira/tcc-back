@@ -1,21 +1,26 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import crypto from 'crypto';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Annex } from '../../../domain/value-objects/annex';
 import type { UserId } from '../../../domain/value-objects/id';
 
 @Injectable()
 export class R2UploadService {
-  private s3Client: Bun.S3Client;
+  private s3Client: S3Client;
+  private bucket: string;
 
   constructor() {
-    // Configuração nativa do Bun.S3Client para R2
-    this.s3Client = new Bun.S3Client({
-      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+    // Configuração usando AWS SDK para compatibilidade Node
+    this.bucket = process.env.R2_BUCKET_NAME!;
+    this.s3Client = new S3Client({
+      region: 'auto',
       endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-      region: 'auto',  // Obrigatório para R2
-      bucket: process.env.R2_BUCKET_NAME!,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+      },
     });
   }
 
@@ -44,19 +49,19 @@ export class R2UploadService {
     
     const checksum = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
-    // Upload nativo com Bun.S3Client
+    // Upload usando AWS SDK
     try {
-      await this.s3Client.write(objectKey, fileBuffer, {
-        type: contentType, 
-      });
+      await this.s3Client.send(
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: objectKey,
+          Body: fileBuffer,
+          ContentType: contentType,
+        }),
+      );
 
-      // URL pública (se bucket público; senão, gere presigned abaixo)
       const publicUrl = `${process.env.R2_PUBLIC_DOMAIN}/${objectKey}`;
-      // https://pub-f5ba6441e5f74883b57c33bf16f5aa50.r2.dev/certs/6459aac6-016b-4cdf-9bcf-677bfaf52ad2/teste/4eb831f7-ac44-4477-8ced-776f1426f6aa.pdf
-      // https://pub-f5ba6441e5f74883b57c33bf16f5aa50.r2.dev/certs/6459aac6-016b-4cdf-9bcf-677bfaf52ad2/teste/4eb831f7-ac44-4477-8ced-776f1426f6aa.pdf
 
-
-      // Retorna Annex
       return Annex.fromUploadSpec({
         objectKey,
         contentType,
@@ -72,12 +77,18 @@ export class R2UploadService {
   }
 
   // Opcional: Presigned URL para download (se não público)
-  getPresignedUrl(objectKey: string, options: { expiresIn?: number; method?: 'GET' | 'PUT' | 'DELETE' } = { expiresIn: 3600 }): string {
-    return this.s3Client.presign(objectKey, options);
+  async getPresignedUrl(
+    objectKey: string,
+    options: { expiresIn?: number; method?: 'GET' | 'PUT' | 'DELETE' } = { expiresIn: 3600 },
+  ): Promise<string> {
+    const command = new GetObjectCommand({ Bucket: this.bucket, Key: objectKey });
+    return getSignedUrl(this.s3Client, command, { expiresIn: options.expiresIn });
   }
 
   // Opcional: Delete (para reject de certificate)
   async deleteObject(objectKey: string): Promise<void> {
-    await this.s3Client.delete(objectKey);
+    await this.s3Client.send(
+      new DeleteObjectCommand({ Bucket: this.bucket, Key: objectKey }),
+    );
   }
 }

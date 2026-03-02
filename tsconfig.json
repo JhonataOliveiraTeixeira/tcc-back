@@ -5,7 +5,7 @@
     "lib": ["ESNext", "DOM"],
     "allowJs": true,
     "moduleResolution": "node",
-    "types": ["node"], 
+    "types": ["node", "jest"], 
 
     // Metadata & Decorators (Obrigatório para NestJS)
     "emitDecoratorMetadata": true,

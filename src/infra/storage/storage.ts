@@ -15,8 +15,8 @@ export type S3AdapterOptions = {
 
 
 export interface ObjectStorage {
-  presignPut(key: string, opts?: { expiresIn?: number; contentType?: string; acl?: S3AdapterOptions["defaultACL"] }): string;
-  write(key: string, data: Blob | ArrayBuffer | string, contentType?: string): Promise<void>;
+  presignPut(key: string, opts?: { expiresIn?: number; contentType?: string; acl?: S3AdapterOptions["defaultACL"] }): Promise<string>;
+  write(key: string, data: Buffer | Uint8Array | string, contentType?: string): Promise<void>;
   stat(key: string): Promise<{ size: number; etag: string; lastModified: Date; contentType?: string }>;
   exists(key: string): Promise<boolean>;
   delete(key: string): Promise<void>;

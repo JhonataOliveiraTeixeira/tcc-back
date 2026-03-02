@@ -1,5 +1,6 @@
 import { InternalServerErrorException } from "@nestjs/common";
 import type { ValueObjectInterface } from "./value-object.interface";
+import bcrypt from 'bcrypt';
 
 export class Password implements ValueObjectInterface {
   protected password: string;
@@ -12,19 +13,16 @@ export class Password implements ValueObjectInterface {
     if (!value) {
       throw new Error('Senha obrigatória'); // Melhor que "" vazia – evite senhas inválidas
     }
-    // Correção: Use objeto de opções para bcrypt
-    const hashedPassword = await Bun.password.hash(value, {
-      algorithm: 'bcrypt',
-      cost: 12  // Work factor alto para segurança (10-14 ideal)
-    });
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(value, saltRounds);
     return new Password(hashedPassword);
   }
 
   async equals(other: string): Promise<boolean> {
     if (!other) return false;
     try {
-      const isOk = await Bun.password.verify(other, this.password); // A instÂncia de Password contém o hash, portanto deve ser passado como seguudo argumento
-      return isOk
+      const isOk = await bcrypt.compare(other, this.password);
+      return isOk;
     } catch (error: any) {
       throw new InternalServerErrorException("Erro ao verificar senha");
     }

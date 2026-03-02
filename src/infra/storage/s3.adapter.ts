@@ -1,56 +1,91 @@
-import { s3, S3Client,  } from "bun";
-import type { ObjectStorage, S3AdapterOptions } from "./storage";
 import { Injectable } from "@nestjs/common";
-
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import type { ObjectStorage, S3AdapterOptions } from "./storage";
 
 @Injectable()
 export class S3Adapter implements ObjectStorage{
-  private client: S3Client
+  private client: S3Client;
+  private bucket: string;
 
-  constructor(options?: S3AdapterOptions) { 
-    this.client = S3Adapter.createClient()
+  constructor(options?: S3AdapterOptions) {
+    this.bucket = options?.bucket || process.env.S3_BUCKET_NAME!;
+    this.client = new S3Client({
+      region: options?.region || process.env.AWS_REGION || 'us-east-1',
+      endpoint: options?.endpoint,
+      credentials: {
+        accessKeyId: options?.accessKeyId || process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: options?.secretAccessKey || process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    });
   }
 
-
   static createClient(): S3Client {
+    // helper if needed
     return new S3Client({
-      accessKeyId: "your-access-key",
-      secretAccessKey: "your-secret-key",
-      bucket: "my-bucket",
-      // sessionToken: "..."
-      // acl: "public-read",
-      // endpoint: "https://s3.us-east-1.amazonaws.com",
-      // endpoint: "https://<account-id>.r2.cloudflarestorage.com", // Cloudflare R2
-      // endpoint: "https://<region>.digitaloceanspaces.com", // DigitalOcean Spaces
-      // endpoint: "http://localhost:9000", // MinIO
+      region: process.env.AWS_REGION || 'us-east-1',
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
     });
   }
   
 
 
 
-  presignPut(key: string, opts?: { expiresIn?: number; contentType?: string; acl?: S3AdapterOptions["defaultACL"]; }): string {
-    throw new Error("Method not implemented.");
+  async presignPut(key: string, opts?: { expiresIn?: number; contentType?: string; acl?: S3AdapterOptions["defaultACL"]; }): Promise<string> {
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+      ContentType: opts?.contentType,
+      ACL: opts?.acl as any,
+    });
+    // presigning put, using 60s default if not provided
+    return getSignedUrl(this.client, command, { expiresIn: opts?.expiresIn || 3600 });
   }
-  async write(key: string, data: Blob | ArrayBuffer | string): Promise<void> {
-    const res = await s3.write(key, data)
 
-    if (res == 0) {
-      throw new Error("Error in uploading file")
+  async write(key: string, data: Buffer | Uint8Array | string): Promise<void> {
+    let body: Buffer | Uint8Array | string = data;
+    if (data instanceof ArrayBuffer) {
+      body = new Uint8Array(data);
     }
-    
+    await this.client.send(
+      new PutObjectCommand({ Bucket: this.bucket, Key: key, Body: body }),
+    );
   }
-  stat(key: string): Promise<{ size: number; etag: string; lastModified: Date; contentType?: string; }> {
-    throw new Error("Method not implemented.");
+
+  async stat(key: string): Promise<{ size: number; etag: string; lastModified: Date; contentType?: string; }> {
+    const head = await this.client.send(new GetObjectCommand({ Bucket: this.bucket, Key: key }));
+    return {
+      size: Number(head.ContentLength || 0),
+      etag: head.ETag || '',
+      lastModified: head.LastModified || new Date(0),
+      contentType: head.ContentType,
+    };
   }
-  exists(key: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+
+  async exists(key: string): Promise<boolean> {
+    try {
+      await this.client.send(new GetObjectCommand({ Bucket: this.bucket, Key: key }));
+      return true;
+    } catch (e: any) {
+      if (e.name === 'NoSuchKey' || e.$metadata?.httpStatusCode === 404) {
+        return false;
+      }
+      throw e;
+    }
   }
-  delete(key: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async delete(key: string): Promise<void> {
+    await this.client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
   }
+
   publicUrl(key: string): string | undefined {
-    throw new Error("Method not implemented.");
+    if (process.env.S3_PUBLIC_URL) {
+      return `${process.env.S3_PUBLIC_URL}/${key}`;
+    }
+    return undefined;
   }
 
 }
