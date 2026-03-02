@@ -8,7 +8,7 @@
   "license": "UNLICENSED",
   "module": "src/main.ts",
   "scripts": {
-    "build": "NODE_ENV=production bun run scripts/build.ts",
+    "build": "bunx prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=development tsc && bun .",
     "start:dev": "NODE_ENV=development tsc-watch --onSuccess \"bun .\"",
@@ -22,6 +22,7 @@
     "test:e2e": "bun test ./test/app.e2e-spec.ts"
   },
   "dependencies": {
+    "@nestjs/cli": "^11.0.16",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^11.0.1",
